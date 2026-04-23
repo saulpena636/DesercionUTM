@@ -1,0 +1,40 @@
+.tablaContainer{
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    margin-bottom: 2rem;
+}
+
+.titulo{
+    font-size: 1.25rem;
+    font-style: normal;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th{
+    background-color: #f2f2f2;
+    padding: 12px;
+    box-sizing: border-box;
+
+    text-align: left;
+}
+
+td{
+    padding: 12px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #ddd;
+}
+
+td a{
+    color: #7E2C2C;
+    font-weight: 700;
+}
+
