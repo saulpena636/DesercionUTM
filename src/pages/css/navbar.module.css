@@ -1,3 +1,16 @@
+.sidebar{
+    width: 17.85rem;
+    height: 100vh;
+    position: fixed;
+    background-color: #FFFFFF;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    z-index: 20;
+}
+
 .titlenav{
     font-size: 1.5rem;
     font-weight: 700;
@@ -47,4 +60,72 @@
 
 .navlist a:hover{
     background-color: #E9E9E9;
+}
+
+/* Ocultamos cosas que solo son para móvil */
+.mobileHeader { display: none; }
+.overlay { display: none; }
+.closeButton { display: none; }
+
+@media (max-width: 960px) {
+
+    /* Aparece una cabecera arriba con el botón de hamburguesa */
+    .mobileHeader {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        background-color: white;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        z-index: 10;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        box-sizing: border-box;
+    }
+
+    .menuButton {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #7E2C2C;
+        cursor: pointer;
+        margin-right: 1rem;
+    }
+
+    /* ESCONDEMOS EL SIDEBAR FUERA DE LA PANTALLA */
+    .sidebar {
+        transform: translateX(-100%); 
+    }
+
+    /* ESTA CLASE SE ACTIVA CON REACT PARA MOSTRARLO */
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    /* El botón de la "X" para cerrar dentro del menú */
+    .closeButton {
+        display: block;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #666;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        cursor: pointer;
+    }
+
+    /* El fondo oscuro transparente que aparece detrás del menú */
+    .overlay {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 15; /* Está por debajo del sidebar (20) pero encima del contenido */
+    }
 }

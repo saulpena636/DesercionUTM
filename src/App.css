@@ -1,17 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
 
-nav{
-    width: 17.85rem;
-    height: 100vh;
-    position: fixed;
-    background-color: #FFFFFF;
-    padding: 2rem 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-sizing: border-box;
-}
-
 main{
     background-color: #E9E9E9;
     margin-left: 17.85rem;
@@ -26,4 +14,11 @@ a, h1, h2, h3, p, div{
     color: #000000;
     margin: 0;
     text-decoration: none;
+}
+
+@media (max-width: 960px) {
+    main{
+        margin-left: 0;
+        padding-top: 80px; /* Para evitar que el contenido quede debajo del nav */
+    }
 }
