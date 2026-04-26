@@ -32,7 +32,7 @@ function TablaGeneral({ tablaEstudiantes = [] }) {
     return (
         <div className={styles.tablaContainer}>
             <h3 className={styles.titulo}>Tabla de estudiantes en riesgo</h3>
-            <table>
+            <table className={styles.tablaEstudiantes}>
                 <thead>
                     <tr>
                         <th>Matrícula</th>
@@ -46,11 +46,14 @@ function TablaGeneral({ tablaEstudiantes = [] }) {
                     {/* Renderizamos currentItems en lugar de toda la tabla */}
                     {currentItems.map((row, index) => (
                         <tr key={index}>
-                            <td>{row['MATRÍCULA']}</td>
-                            <td>{row['GRUPO']}</td>
-                            <td>{row['CARRERA']}</td>
-                            <td>{row['PROMEDIO GENERAL']}</td>
-                            <td><a href="#">Ver detalles</a></td>
+                            {/* EL SECRETO ESTÁ AQUÍ: El data-label */}
+                            <td data-label="Matrícula">{row['MATRÍCULA']}</td>
+                            <td data-label="Carrera">{row['CARRERA']}</td>
+                            <td data-label="Grupo">{row['GRUPO']}</td>
+                            <td data-label="Promedio">{row['PROMEDIO GENERAL']}</td>
+                            <td>
+                                <a href="#" className={styles.btnDetalles}>Ver perfil</a>
+                            </td>
                         </tr>
                     ))}
                 </tbody>

@@ -52,6 +52,14 @@
     box-sizing: border-box;
 }
 
+.card100{
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-sizing: border-box;
+}
+
 
 /*filtros de estudiantes*/
 .filtersContainer {
@@ -108,4 +116,28 @@
 
 .filtersButton:active {
     transform: scale(0.97);
+}
+
+@media (max-width: 768px) {
+    .filtersContainer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filtersSelect, .filtersButton {
+        width: 100%;
+    }
+
+    .row {
+        flex-direction: column;
+    }
+
+    .card100, .card66, .card33, .card50 {
+        width: 100%;
+    }
+
+    .cards {
+        width: 100%;
+        flex-direction: column;
+    }
 }

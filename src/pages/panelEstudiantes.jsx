@@ -21,16 +21,18 @@ function PanelEstudiantes() {
 
     const [selectedCarreras, setSelectedCarreras] = useState("");
     const [selectedGrupos, setSelectedGrupos] = useState("");
+    const [filtroGrupoDeshabilitado, setFiltroGrupoDeshabilitado] = useState(true);
 
     const isBotonDeshabilitado = selectedCarreras === "" && selectedGrupos === "";
 
     useEffect(() => {
         const loadMetadata = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/metadata');
+                const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/metadata`);
                 if (!res.ok) throw new Error('Error en la respuesta');
                 const data = await res.json();
                 setOptions(data);
+                 // Habilitamos el filtro de grupo una vez que tenemos las opciones
             } catch (err) {
                 console.error("Error cargando filtros", err);
             }
@@ -53,9 +55,11 @@ function PanelEstudiantes() {
 
     const fetchDashboardData = async () => {
         setLoading(true);
+        setFiltroGrupoDeshabilitado(selectedGrupos === "");
+        console.log(filtroGrupoDeshabilitado);
 
         try {
-            const res = await fetch('http://localhost:5000/api/estudiantes', {
+            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/estudiantes`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -123,10 +127,25 @@ function PanelEstudiantes() {
                     <div className={styles.cards}>
                         <CardInfo icono={["fa-solid fa-users-line", "#EACBCB", "#7E2C2C"]} titulo="Total de alumnos" contenido={[data.kpis.total, "#000000"]} />
                         <CardInfo icono={["fa-solid fa-exclamation-triangle", "#ffcaca", "#D70000"]} titulo="En riesgo crítico" contenido={[data.kpis.riesgo, "#e74c3c"]} />
-                        {selectedGrupos == "" ? <CardInfo icono={["fa-solid fa-id-card-clip", "#FFFC97", "#A19300"]} titulo="Grupo con mas riesgo" contenido={[data.kpis.grupo_riesgo, "#7c7200"]} /> : <CardInfo icono={["fa-solid fa-check-circle", "#CBEACC", "#00572E"]} titulo="Alumnos regulares" contenido={[data.kpis.regular, "#27ae60"]} />}
+                        {filtroGrupoDeshabilitado ? <CardInfo icono={["fa-solid fa-id-card-clip", "#FFFC97", "#A19300"]} titulo="Grupo con mas riesgo" contenido={[data.kpis.grupo_riesgo, "#7c7200"]} /> : <CardInfo icono={["fa-solid fa-check-circle", "#CBEACC", "#00572E"]} titulo="Promedio grupal" contenido={[data.kpis.promedio, "#27ae60"]} />}
                     </div>
                     <TablaGeneral tablaEstudiantes={data.tabla} />
 
+                    <div className={styles.row}>
+                        <div className={styles.card100}>
+                            <Plot
+                                data={data.charts.distribucion_promedios.data}
+                                Layout={{
+                                    ...data.charts.distribucion_promedios.layout, autosize: true,
+                                    useResizeHandler: true,
+                                    width: undefined, // Para que tome el ancho del contenedor padre
+                                    height: 450
+                                }}
+                                style={{ width: "100%" }}
+                                config={{ responsive: true }}
+                            />
+                        </div>
+                    </div>
                     <div className={styles.row}>
                         <div className={styles.card66}>
                             <Plot
@@ -155,7 +174,7 @@ function PanelEstudiantes() {
                                 config={{ responsive: true }}
                             />
                         </div>
-                    </div>
+                    </div>{ data.kpis.riesgo !== 0 &&
                     <div className={styles.row}>
                         <div className={styles.card50}>
                             <Plot
@@ -183,7 +202,7 @@ function PanelEstudiantes() {
                                 config={{ responsive: true }}
                             />
                         </div>
-                    </div>
+                    </div>}
                     <div className={styles.row}>
                         <div className={styles.card33}>
                             <Plot

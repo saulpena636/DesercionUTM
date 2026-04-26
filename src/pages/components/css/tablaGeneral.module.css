@@ -14,12 +14,12 @@
     margin-bottom: 1rem;
 }
 
-table{
+.tablaEstudiantes{
     width: 100%;
     border-collapse: collapse;
 }
 
-th{
+.tablaEstudiantes th{
     background-color: #f2f2f2;
     padding: 12px;
     box-sizing: border-box;
@@ -27,14 +27,90 @@ th{
     text-align: left;
 }
 
-td{
+.tablaEstudiantes td{
     padding: 12px;
     box-sizing: border-box;
     border-bottom: 1px solid #ddd;
 }
 
-td a{
+.tablaEstudiantes td a{
     color: #7E2C2C;
     font-weight: 700;
 }
 
+.btnDetalles {
+    color: #7E2C2C;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.btnDetalles:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    /* 1. Forzamos que la tabla deje de ser una cuadrícula rígida */
+    .tablaEstudiantes, 
+    .tablaEstudiantes thead, 
+    .tablaEstudiantes tbody, 
+    .tablaEstudiantes th, 
+    .tablaEstudiantes td, 
+    .tablaEstudiantes tr { 
+        display: block; 
+    }
+
+    /* 2. Escondemos los encabezados de arriba (solo los vemos en PC) */
+    .tablaEstudiantes thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    /* 3. Cada fila (tr) se convierte en una tarjeta con borde */
+    .tablaEstudiantes tr {
+        border: 1px solid #eaeaea;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        padding: 10px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    /* 4. Estilo de cada celda dentro de la tarjeta */
+    .tablaEstudiantes td { 
+        border-bottom: 1px solid #f4f4f4;
+        position: relative;
+        padding-left: 50%; /* Hacemos espacio a la izquierda para el título */
+        text-align: right;
+        min-height: 40px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .tablaEstudiantes td:last-child {
+        border-bottom: none;
+        justify-content: center; /* Centramos el botón de acción al final */
+        padding-left: 0;
+        margin-top: 10px;
+    }
+
+    /* 5. Inyectamos el título usando el atributo 'data-label' de React */
+    .tablaEstudiantes td::before { 
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%; 
+        padding-right: 10px; 
+        white-space: nowrap;
+        text-align: left;
+        font-weight: 600;
+        color: #888;
+    }
+
+    /* Al último elemento (el botón) le quitamos el before para que se centre bien */
+    .tablaEstudiantes td:last-child::before {
+        content: none;
+    }
+
+}

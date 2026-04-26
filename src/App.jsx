@@ -4,8 +4,13 @@ import Navegacion from './pages/navegacion.jsx';
 import PanelPrincipal from './pages/panelPrincipal.jsx';
 import PanelEstudiantes from './pages/panelEstudiantes.jsx';
 import PerfilEstudiante from './pages/perfilEstudiante.jsx';
+import eruda from 'eruda'
+
 
 function App() {
+  if (process.env.NODE_ENV === 'development') {
+    eruda.init()
+  }
   return (
     <>
       <Navegacion/>
