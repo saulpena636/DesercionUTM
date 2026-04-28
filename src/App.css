@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
 
 main{
-    background-color: #E9E9E9;
+    background-color: var(--bg-main);
     margin-left: 17.85rem;
     min-height: 100vh;
     padding: 2rem;
@@ -11,7 +11,7 @@ main{
 
 a, h1, h2, h3, p, div{
     font-family: 'Lexend', sans-serif;
-    color: #000000;
+    color: var(--text-main);
     margin: 0;
     text-decoration: none;
 }

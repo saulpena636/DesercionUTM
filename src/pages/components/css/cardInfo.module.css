@@ -1,6 +1,6 @@
 .cardInfo{
     width: 100%;
-    background-color: white;
+    background-color: var(--bg-card);
     padding: 1.5rem;
     border-radius: 0.5rem;
     box-sizing: border-box;
@@ -18,7 +18,7 @@
 
 .cardInfo p{
     font-size: 1rem;
-    color: #565656;
+    color: var(--text-subtitle);
 }
 
 .carInfo h1{

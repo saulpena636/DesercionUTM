@@ -2,7 +2,7 @@
     width: 17.85rem;
     height: 100vh;
     position: fixed;
-    background-color: #FFFFFF;
+    background-color: var(--bg-card);
     padding: 2rem 1rem;
     display: flex;
     flex-direction: column;
@@ -44,7 +44,7 @@
     
     font-size: 1rem;
     font-weight: 400;
-    color: black;
+    color: var(--text-main);
 
     display: flex;
     justify-content: flex-start;
@@ -74,7 +74,7 @@
         display: flex;
         align-items: center;
         padding: 1rem;
-        background-color: white;
+        background-color: var(--bg-card);
         position: fixed;
         top: 0;
         left: 0;

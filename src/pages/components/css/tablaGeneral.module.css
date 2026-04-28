@@ -1,6 +1,6 @@
 .tablaContainer{
     width: 100%;
-    background-color: #ffffff;
+    background-color: var(--bg-card);
     border-radius: 8px;
     padding: 1.5rem;
     box-sizing: border-box;
@@ -20,7 +20,7 @@
 }
 
 .tablaEstudiantes th{
-    background-color: #f2f2f2;
+    background-color: var(--tabla-th);
     padding: 12px;
     box-sizing: border-box;
 

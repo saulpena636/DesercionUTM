@@ -1,6 +1,6 @@
 .subtitulo {
     margin-top: 8px;
-    color: #565656;
+    color: var(--text-subtitle);
     font-size: 1rem;
     font-style: normal;
     font-weight: 400;
@@ -10,7 +10,6 @@
 
 .informacion{
     margin-bottom: 1.5rem;
-    color: #000000;
     font-size: 1.5rem;
     font-style: normal;
     font-weight: 500;
@@ -31,7 +30,7 @@
 
 .card66{
     width: 66.66666667%;
-    background-color: #ffffff;
+    background-color: var(--bg-card);
     border-radius: 8px;
     padding: 1.5rem;
     box-sizing: border-box;
@@ -39,14 +38,14 @@
 
 .card33{
     width: 33.33333333%;
-    background-color: #ffffff;
+    background-color: var(--bg-card);
     border-radius: 8px;
     padding: 1.5rem;
     box-sizing: border-box;
 }
 .card50{
     width: 50%;
-    background-color: #ffffff;
+    background-color: var(--bg-card);
     border-radius: 8px;
     padding: 1.5rem;
     box-sizing: border-box;
@@ -54,7 +53,7 @@
 
 .card100{
     width: 100%;
-    background-color: #ffffff;
+    background-color: var(--bg-card);
     border-radius: 8px;
     padding: 1.5rem;
     box-sizing: border-box;
@@ -103,7 +102,7 @@
     padding: 10px 18px;
     border: none;
     border-radius: 8px;
-    background-color: #7E2C2C;
+    background-color: var(--primary-color);
     color: white;
     font-size: 14px;
     cursor: pointer;

@@ -1,3 +1,31 @@
+/* =========================================
+   PALETA CLARA (Por defecto)
+   ========================================= */
+:root {
+    --bg-main: #E9E9E9;
+    --bg-card: #ffffff;
+    --text-main: #000000;
+    --text-subtitle: #565656;
+    --border-color: #eaeaea;
+    --primary-color: #7E2C2C; /* Tu rojo UTM */
+    --hover-bg: #fcfcfc;
+    --tabla-th: #f2f2f2;
+}
+
+/* =========================================
+   PALETA OSCURA
+   ========================================= */
+[data-theme="dark"] {
+    --bg-main: #121212;      /* Gris muy oscuro, casi negro */
+    --bg-card: #1e1e1e;      /* Gris oscuro para las tarjetas */
+    --text-main: #e0e0e0;    /* Blanco opaco para no lastimar la vista */
+    --text-subtitle: #a0a0a0;
+    --border-color: #333333;
+    --primary-color: #EAA4A4; /* Un rojo más suave/pastel para que brille en oscuro */
+    --hover-bg: #2a2a2a;
+    --tabla-th: #101010;
+}
+
 body{
     margin: 0;
     padding: 0;
