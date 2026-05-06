@@ -34,12 +34,8 @@ function Navegacion() {
                 <button onClick={toggleSidebar} className={styles.menuButton}>
                     ☰ {/* Puedes usar un icono de react-icons aquí */}
                 </button>
-                <h3 style={{ margin: 0, color: '#7E2C2C' }}>DeserciónUTM</h3>
+                <h3 style={{ margin: 0}}>DeserciónUTM</h3>
 
-                {/* Botón de Modo Oscuro en Móvil */}
-                <button onClick={toggleTheme} className={styles.themeToggleBtn}>
-                    {isDarkMode ? '☀️' : '🌙'}
-                </button>
             </div>
 
             {/* OVERLAY: Fondo oscuro para cerrar al hacer clic afuera (Solo móvil) */}

@@ -53,9 +53,9 @@ function PanelPrincipal() {
             <p className={styles.subtitulo}>Datos del semestre 2026-A</p>
             <h2 className={styles.informacion}>Informacion general de todas las carreras</h2>
             <div className={styles.cards}>
-                <CardInfo icono={["fa-solid fa-users-line", "#EACBCB", "#7E2C2C"]} titulo="Total de alumnos" contenido={[data.kpis.total, "#000000"]} />
+                <CardInfo icono={["fa-solid fa-users-line", "#EACBCB", "#7E2C2C"]} titulo="Total de alumnos" contenido={[data.kpis.total, ""]} />
                 <CardInfo icono={["fa-solid fa-exclamation-triangle", "#ffcaca", "#D70000"]} titulo="En riesgo crítico" contenido={[data.kpis.riesgo, "#e74c3c"]} />
-                <CardInfo icono={["fa-solid fa-circle-exclamation", "#FFB2C2", "#B20025"]} titulo="Carrera con mas riesgo" contenido={[data.kpis.carrera_riesgo, "#000000"]} />
+                <CardInfo icono={["fa-solid fa-circle-exclamation", "#FFB2C2", "#B20025"]} titulo="Carrera con mas riesgo" contenido={[data.kpis.carrera_riesgo, ""]} />
             </div>
             <TablaGeneral tablaEstudiantes={data.tabla.slice(0, 5)}/>
 

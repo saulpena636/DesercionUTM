@@ -4,6 +4,7 @@ import Navegacion from './pages/navegacion.jsx';
 import PanelPrincipal from './pages/panelPrincipal.jsx';
 import PanelEstudiantes from './pages/panelEstudiantes.jsx';
 import PerfilEstudiante from './pages/perfilEstudiante.jsx';
+import Login from './pages/login.jsx';
 import eruda from 'eruda'
 
 
@@ -12,16 +13,21 @@ function App() {
     eruda.init()
   }
   return (
-    <>
-      <Navegacion/>
-      <main>
-        <Routes>
-          <Route path="/" element={<PanelPrincipal />} />
-          <Route path="/estudiantes" element={<PanelEstudiantes />} />
-          <Route path="/perfil" element={<PerfilEstudiante />} />
-        </Routes>
-      </main>
-    </>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="*" element={
+        <>
+          <Navegacion />
+          <main>
+            <Routes>
+              <Route path="/" element={<PanelPrincipal />} />
+              <Route path="/estudiantes" element={<PanelEstudiantes />} />
+              <Route path="/perfil" element={<PerfilEstudiante />} />
+            </Routes>
+          </main>
+        </>
+      } />
+    </Routes>
   )
 }
 
