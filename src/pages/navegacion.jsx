@@ -1,8 +1,11 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom"; // Importamos useNavigate
 import React, { useState, useEffect } from 'react';
 import styles from './css/navbar.module.css';
 
 function Navegacion() {
+    // Inicializamos navigate
+    const navigate = useNavigate();
+
     // Estado para controlar si el menú móvil está abierto
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -27,6 +30,19 @@ function Navegacion() {
 
     // Función para cambiar de modo
     const toggleTheme = () => setIsDarkMode(!isDarkMode);
+
+    // Función para cerrar sesión
+    const handleLogout = () => {
+        // 1. Limpiar los datos de sesión almacenados
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        
+        // 2. Cerrar el sidebar si está en versión móvil (opcional pero recomendado)
+        setIsSidebarOpen(false);
+
+        // 3. Redirigir a la pantalla de login
+        navigate("/login");
+    };
 
     return (
         <>
@@ -63,8 +79,17 @@ function Navegacion() {
                         <li><NavLink to="/perfil" className={({ isActive }) => isActive ? styles.active : ""}><i className="fas fa-graduation-cap"></i>Buscar Estudiante</NavLink></li>
                         <li><NavLink to="/upload" className={({ isActive }) => isActive ? styles.active : ""}><i className="fas fa-file"></i>Subir Datos</NavLink></li>
                     </ul>
-                    {/* Botón de Modo Oscuro en Escritorio (Abajo en el sidebar) */}
-                    <div style={{ position: 'absolute', bottom: '20px', left: '20px' }}>
+                    
+                    {/* Contenedor inferior para botones adicionales */}
+                    <div style={{ position: 'absolute', bottom: '20px', left: '20px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                        <p>Usuario: {localStorage.getItem("username")}</p>
+                        
+                        {/* Botón de Cerrar Sesión */}
+                        <button onClick={handleLogout} className={styles.themeToggleBtnEscritorio}>
+                            <i className="fas fa-sign-out-alt"></i> Cerrar sesión
+                        </button>
+
+                        {/* Botón de Modo Oscuro */}
                         <button onClick={toggleTheme} className={styles.themeToggleBtnEscritorio}>
                             {isDarkMode ? <><i className="fas fa-sun"></i>{' Modo Claro'}</> : <><i className="fas fa-moon"></i>{' Modo Oscuro'}</> }
                         </button>

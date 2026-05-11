@@ -1,18 +1,25 @@
 import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importamos useNavigate
 import styles from './css/fileUpload.module.css';
 
 const FileUpload = () => {
     const [dragActive, setDragActive] = useState(false);
-    const [files, setFiles] = useState([]);
+    const [files, setFiles] = useState([]); 
+    
+    const [isLoading, setIsLoading] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+    
     const inputRef = useRef(null);
+    const navigate = useNavigate(); // Inicializamos el hook
 
-    // Tipos de archivos permitidos
-    const excelTypes = [
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
-        "application/vnd.ms-excel" // .xls
+    const allowedTypes = [
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+        "application/vnd.ms-excel", 
+        "text/csv" 
     ];
+    const allowedExtensions = ['.xlsx', '.xls', '.csv'];
 
-    // Manejar el arrastre (dentro y fuera)
     const handleDrag = (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -23,37 +30,91 @@ const FileUpload = () => {
         }
     };
 
-    // Validar y agregar archivos
-    const handleFiles = (newFiles) => {
-        const validFiles = Array.from(newFiles).filter(file => excelTypes.includes(file.type));
+    const handleFiles = (incomingFiles) => {
+        setSuccessMessage(""); 
+        setErrorMessage("");
         
-        if (validFiles.length !== newFiles.length) {
-            alert("Solo se permiten archivos de Excel (.xlsx, .xls)");
+        const file = incomingFiles[0]; 
+        if (!file) return;
+
+        const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+        const isValid = allowedTypes.includes(file.type) || allowedExtensions.includes(fileExtension);
+
+        if (!isValid) {
+            alert("Solo se permiten archivos .xlsx, .xls o .csv");
+            return;
         }
 
-        setFiles((prev) => [...prev, ...validFiles]);
+        setFiles([file]);
     };
 
-    // Manejar el soltado (Drop)
     const handleDrop = (e) => {
         e.preventDefault();
         e.stopPropagation();
         setDragActive(false);
-        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
             handleFiles(e.dataTransfer.files);
         }
     };
 
-    // Manejar selección manual (Click)
     const handleChange = (e) => {
         e.preventDefault();
-        if (e.target.files && e.target.files[0]) {
+        if (e.target.files && e.target.files.length > 0) {
             handleFiles(e.target.files);
         }
     };
 
-    const removeFile = (index) => {
-        setFiles(files.filter((_, i) => i !== index));
+    const removeFile = () => {
+        setFiles([]); 
+    };
+
+    const handleUpload = async () => {
+        if (files.length === 0) return;
+
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            setErrorMessage("No estás autenticado. Por favor, inicia sesión de nuevo.");
+            return;
+        }
+
+        setIsLoading(true);
+        setSuccessMessage("");
+        setErrorMessage("");
+
+        try {
+            const formData = new FormData();
+            formData.append('file', files[0]);
+
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/upload`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}` 
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                // Mostramos el mensaje de éxito del backend
+                setSuccessMessage(data.message + " Redirigiendo a resultados...");
+                setFiles([]); 
+                
+                // Redirigimos a la tabla después de 1.5 segundos
+                setTimeout(() => {
+                    navigate('/perfil');
+                }, 1500);
+
+            } else {
+                throw new Error(data.message || `Error al procesar el archivo ${files[0].name}`);
+            }
+            
+        } catch (error) {
+            console.error("Error en la subida:", error);
+            setErrorMessage(error.message || "Hubo un problema al conectar con el servidor.");
+            setIsLoading(false); // Solo quitamos el loading si hay error, si es éxito dejamos que fluya la redirección
+        }
     };
 
     return (
@@ -64,43 +125,44 @@ const FileUpload = () => {
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
-                onClick={() => inputRef.current.click()} // Al dar clic, abre el explorador
+                onClick={() => inputRef.current.click()} 
             >
-                {/* Input oculto */}
                 <input 
                     ref={inputRef}
                     type="file" 
-                    multiple 
-                    accept=".xlsx, .xls"
+                    accept=".xlsx, .xls, .csv"
                     onChange={handleChange}
                     style={{ display: 'none' }}
                 />
                 
-                <span className={styles.icon}><i class="fa-solid fa-file-excel"></i></span>
-                <p className={styles.text}>Arrastra tus archivos de Excel aquí</p>
+                <span className={styles.icon}>
+                    <i className="fa-solid fa-file-excel"></i> / <i className="fa-solid fa-file-csv"></i>
+                </span>
+                <p className={styles.text}>Arrastra tu archivo de datos aquí</p>
                 <span className={styles.subtext}>O haz clic para buscar en tu computadora</span>
-                <span className={styles.subtext}>(Solo .xlsx y .xls)</span>
+                <span className={styles.subtext}>(Solo 1 archivo: .xlsx, .xls o .csv)</span>
             </div>
 
-            {/* Lista de archivos cargados */}
+            {errorMessage && <p style={{ color: 'red', marginTop: '10px', textAlign: 'center' }}>{errorMessage}</p>}
+            {successMessage && <p style={{ color: 'green', marginTop: '10px', textAlign: 'center' }}>{successMessage}</p>}
+
             {files.length > 0 && (
                 <ul className={styles.fileList}>
-                    {files.map((file, idx) => (
-                        <li key={idx} className={styles.fileItem}>
-                            <span><i class="fa-solid fa-file"></i> {file.name} ({(file.size / 1024).toFixed(1)} KB)</span>
-                            <button onClick={() => removeFile(idx)} className={styles.removeBtn}>✕</button>
-                        </li>
-                    ))}
+                    <li className={styles.fileItem}>
+                        <span><i className="fa-solid fa-file"></i> {files[0].name} ({(files[0].size / 1024).toFixed(1)} KB)</span>
+                        <button onClick={removeFile} className={styles.removeBtn} disabled={isLoading}>✕</button>
+                    </li>
                 </ul>
             )}
 
             {files.length > 0 && (
                 <button 
                     className={styles.filtersButton} 
-                    style={{ marginTop: '20px', width: '100%' }}
-                    onClick={() => console.log("Enviando a la IA:", files)}
+                    style={{ marginTop: '20px', width: '100%', opacity: isLoading ? 0.7 : 1 }}
+                    onClick={handleUpload}
+                    disabled={isLoading}
                 >
-                    Procesar Predicción Grupal
+                    {isLoading ? "Procesando predicción..." : "Procesar Predicción Grupal"}
                 </button>
             )}
         </div>
