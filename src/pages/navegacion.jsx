@@ -60,13 +60,13 @@ function Navegacion() {
                     <ul className={styles.navlist}>
                         <li><NavLink to="/" className={({ isActive }) => isActive ? styles.active : ""}><i className="fas fa-square-poll-vertical"></i>Panel principal</NavLink></li>
                         <li><NavLink to="/estudiantes" className={({ isActive }) => isActive ? styles.active : ""}><i className="fas fa-user-graduate"></i>Estudiantes en riesgo</NavLink></li>
-                        <li><NavLink to="/perfil" className={({ isActive }) => isActive ? styles.active : ""}><i className="fas fa-file-alt"></i>Buscar Estudiante</NavLink></li>
-                        <li><NavLink to="/upload" className={({ isActive }) => isActive ? styles.active : ""}><i className="fas fa-file-alt"></i>Subir Datos</NavLink></li>
+                        <li><NavLink to="/perfil" className={({ isActive }) => isActive ? styles.active : ""}><i className="fas fa-graduation-cap"></i>Buscar Estudiante</NavLink></li>
+                        <li><NavLink to="/upload" className={({ isActive }) => isActive ? styles.active : ""}><i className="fas fa-file"></i>Subir Datos</NavLink></li>
                     </ul>
                     {/* Botón de Modo Oscuro en Escritorio (Abajo en el sidebar) */}
                     <div style={{ position: 'absolute', bottom: '20px', left: '20px' }}>
                         <button onClick={toggleTheme} className={styles.themeToggleBtnEscritorio}>
-                            {isDarkMode ? '☀️ Modo Claro' : '🌙 Modo Oscuro'}
+                            {isDarkMode ? <><i className="fas fa-sun"></i>{' Modo Claro'}</> : <><i className="fas fa-moon"></i>{' Modo Oscuro'}</> }
                         </button>
                     </div>
                 </div>
