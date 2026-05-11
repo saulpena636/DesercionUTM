@@ -54,7 +54,7 @@
 }
 
 .navlist a.active{
-    background-color: #7E2C2C;
+    background-color: var(--primary-color);
     color: #ffffff;
 }
 

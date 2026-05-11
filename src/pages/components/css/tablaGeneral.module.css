@@ -34,12 +34,12 @@
 }
 
 .tablaEstudiantes td a{
-    color: #7E2C2C;
+    color: var(--primary-color);
     font-weight: 700;
 }
 
 .btnDetalles {
-    color: #7E2C2C;
+    color: var(--primary-color);;
     text-decoration: none;
     font-weight: bold;
 }
