@@ -9,6 +9,12 @@
     margin-bottom: 0.2rem;
 }
 
+.subtitulo {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+
 .subtitle {
     color: var(--text-subtitle);
     font-size: 0.9rem;
@@ -188,15 +194,6 @@
     font-size: 2.5rem;
 }
 
-/* Utilidades para abarcar columnas */
-.colSpan2 {
-    grid-column: span 2;
-}
-
-.rowSpan2 {
-    grid-row: span 2;
-}
-
 .iconBox {
     background-color: #f0f0f0;
     width: 40px;
@@ -209,4 +206,47 @@
     display: flex;
     gap: 2rem;
     margin-bottom: 2rem;
+}
+
+.column{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+}
+
+.card33{
+    width: 33.33333333%;
+    background-color: #7E2C2C;
+    color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-sizing: border-box;
+        display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.iconoInfo{
+    width: 3rem;
+    height: 3rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.card33 p{
+    font-size: 1rem;
+    color: white;
+}
+
+.card33 h1{
+    font-size: 2rem;
+    font-style: normal;
+    font-weight: 700;
+    margin-bottom: 8px;
 }

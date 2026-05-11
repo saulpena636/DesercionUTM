@@ -1,0 +1,63 @@
+.uploadContainer {
+    background-color: var(--bg-card);
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    margin-top: 20px;
+}
+
+/* Efecto cuando el archivo está encima */
+.dragActive {
+    border-color: var(--primary-color);
+    background-color: rgba(126, 44, 44, 0.05);
+    transform: scale(1.01);
+}
+
+.icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.text {
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.subtext {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    display: block;
+    margin-top: 8px;
+}
+
+/* Lista de archivos seleccionados */
+.fileList {
+    margin-top: 20px;
+    text-align: left;
+    list-style: none;
+    padding: 0;
+}
+
+.fileItem {
+    background: var(--hover-bg);
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    border: 1px solid var(--border-color);
+}
+
+.removeBtn {
+    color: #e30000;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}

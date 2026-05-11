@@ -5,7 +5,6 @@ import React, { useState, useEffect } from 'react';
 import Plotly from 'plotly.js-dist';
 import createPlotlyComponent from 'react-plotly.js/factory';
 
-
 function PanelPrincipal() {
     const factory = createPlotlyComponent.default || createPlotlyComponent;
     const Plot = factory(Plotly);
