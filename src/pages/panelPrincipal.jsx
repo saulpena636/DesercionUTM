@@ -11,6 +11,55 @@ function PanelPrincipal() {
     // Estados para los datos del dashboard
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+
+    const handleDownloadDashboardPDF = async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            alert("No estás autenticado. Por favor, inicia sesión.");
+            return;
+        }
+
+        setIsGeneratingReport(true);
+
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/reporte/dashboard`, {
+                method: 'POST', // Cambiamos a POST
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json' // Indicamos que enviamos un JSON
+                },
+                body: JSON.stringify({
+                    carreras: "",
+                    grupos: ""
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error("Error al generar el reporte estadístico en el servidor.");
+            }
+
+            // Convertimos la respuesta binaria a un Blob tipo PDF
+            const rawBlob = await response.blob();
+            const pdfBlob = new Blob([rawBlob], { type: 'application/pdf' });
+
+            // Creamos la URL temporal y abrimos en una nueva pestaña
+            const url = window.URL.createObjectURL(pdfBlob);
+            window.open(url, '_blank');
+
+            // Limpiamos la memoria después de unos segundos
+            setTimeout(() => {
+                window.URL.revokeObjectURL(url);
+            }, 5000);
+
+        } catch (error) {
+            console.error("Error generando el PDF:", error);
+            alert("Hubo un problema al generar el reporte estadístico. Intenta nuevamente.");
+        } finally {
+            setIsGeneratingReport(false);
+        }
+    };
 
     // 2. Función para obtener datos del dashboard
     const fetchDashboardData = async () => {
@@ -55,10 +104,15 @@ function PanelPrincipal() {
                 </div>
                 <button
                     className={styles.reporteButton}
-                    
+                    onClick={handleDownloadDashboardPDF}
+                    disabled={isGeneratingReport}
+                    style={{ opacity: isGeneratingReport ? 0.7 : 1, cursor: isGeneratingReport ? 'not-allowed' : 'pointer' }}
                 >
-                    <i className="fas fa-file-alt" style={{ marginRight: 8 }}></i>
-                    Generar reporte
+                    <i
+                        className={isGeneratingReport ? "fas fa-spinner fa-spin" : "fas fa-file-alt"}
+                        style={{ marginRight: 8 }}
+                    ></i>
+                    {isGeneratingReport ? "Procesando documento..." : "Generar reporte"}
                 </button>
             </div>
             <h2 className={styles.informacion}>Informacion general de todas las carreras</h2>
