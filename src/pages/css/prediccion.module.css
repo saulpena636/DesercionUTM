@@ -1,0 +1,162 @@
+.dashboardHeader{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.tablaContainer{
+    width: 100%;
+    background-color: var(--bg-card);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    margin-bottom: 2rem;
+}
+
+.titulo{
+    font-size: 1.25rem;
+    font-style: normal;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.tablaEstudiantes{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tablaEstudiantes th{
+    background-color: var(--tabla-th);
+    padding: 12px;
+    box-sizing: border-box;
+
+    text-align: left;
+}
+
+.tablaEstudiantes td{
+    padding: 12px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #ddd;
+}
+
+.tablaEstudiantes td a{
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.chartsGrid{
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.btnDetalles {
+    color: var(--primary-color);;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.btnDetalles:hover {
+    text-decoration: underline;
+}
+
+.card100{
+    width: 100%;
+    background-color: var(--bg-card);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-sizing: border-box;
+}
+
+.reporteButton {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    box-sizing: border-box;
+    height: 2.25rem;
+}
+
+
+@media (max-width: 768px) {
+    /* 1. Forzamos que la tabla deje de ser una cuadrícula rígida */
+    .tablaEstudiantes, 
+    .tablaEstudiantes thead, 
+    .tablaEstudiantes tbody, 
+    .tablaEstudiantes th, 
+    .tablaEstudiantes td, 
+    .tablaEstudiantes tr { 
+        display: block; 
+    }
+
+    /* 2. Escondemos los encabezados de arriba (solo los vemos en PC) */
+    .tablaEstudiantes thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    /* 3. Cada fila (tr) se convierte en una tarjeta con borde */
+    .tablaEstudiantes tr {
+        border: 1px solid #eaeaea;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        padding: 10px;
+        background-color: var(--bg-main);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    /* 4. Estilo de cada celda dentro de la tarjeta */
+    .tablaEstudiantes td { 
+        border-bottom: 1px solid #f4f4f4;
+        position: relative;
+        padding-left: 50%; /* Hacemos espacio a la izquierda para el título */
+        text-align: right;
+        min-height: 40px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .tablaEstudiantes td:last-child {
+        border-bottom: none;
+        justify-content: center; /* Centramos el botón de acción al final */
+        padding-left: 0;
+        margin-top: 10px;
+    }
+
+    /* 5. Inyectamos el título usando el atributo 'data-label' de React */
+    .tablaEstudiantes td::before { 
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%; 
+        padding-right: 10px; 
+        white-space: nowrap;
+        text-align: left;
+        font-weight: 600;
+        color: #888;
+    }
+
+    .dashboardHeader{
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    /* Al último elemento (el botón) le quitamos el before para que se centre bien */
+    .tablaEstudiantes td:last-child::before {
+        content: none;
+    }
+
+    .chartsGrid{
+        flex-direction: column;
+    }
+
+}

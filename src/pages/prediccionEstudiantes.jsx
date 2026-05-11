@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Plot from 'react-plotly.js';
+import Plotly from 'plotly.js-dist';
+import createPlotlyComponent from 'react-plotly.js/factory';
 import styles from './css/prediccion.module.css'; // Asumiendo que crearás este archivo CSS
 
 const PrediccionEstudiantes = () => {
+    const factory = createPlotlyComponent.default || createPlotlyComponent;
+    const Plot = factory(Plotly);
+
     const navigate = useNavigate();
     const [token] = useState(localStorage.getItem("token"));
 
@@ -26,6 +30,58 @@ const PrediccionEstudiantes = () => {
     });
     const [isTableLoading, setIsTableLoading] = useState(false);
 
+    const [isDownloading, setIsDownloading] = useState(false);
+
+    const handleDownloadPDF = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        alert("No estás autenticado. Por favor, inicia sesión.");
+        return;
+    }
+
+    setIsDownloading(true);
+
+    try {
+        // 1. Uso de la variable correcta (nota que quitamos el /api extra porque ya viene en el .env)
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/reporte/pdf`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}` 
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error("Error al generar el reporte en el servidor.");
+        }
+
+        // 2. Convertir la respuesta a Blob
+        const rawBlob = await response.blob();
+
+        // 3. Forzar el tipo MIME a PDF. 
+        // Esto le dice al navegador que no lo descargue, sino que use su visor nativo de PDFs.
+        const pdfBlob = new Blob([rawBlob], { type: 'application/pdf' });
+
+        // 4. Crear la URL temporal
+        const url = window.URL.createObjectURL(pdfBlob);
+
+        // 5. Abrir en una nueva pestaña
+        window.open(url, '_blank');
+        
+        // 6. Limpieza: Damos un tiempo de gracia de unos segundos antes de revocar la URL
+        // para asegurarnos de que la nueva pestaña termine de renderizar el archivo.
+        setTimeout(() => {
+            window.URL.revokeObjectURL(url);
+        }, 5000);
+
+    } catch (error) {
+        console.error("Error generando el PDF:", error);
+        alert("Hubo un problema al generar el reporte. Intenta nuevamente.");
+    } finally {
+        setIsDownloading(false);
+    }
+};
+
     // 1. Verificar el estado del archivo al montar el componente
     useEffect(() => {
         if (!token) {
@@ -45,11 +101,11 @@ const PrediccionEstudiantes = () => {
 
     const checkStatus = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/status_archivo`, {
+            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/status_archivo`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
-            
+
             if (res.ok) {
                 setStatusArchivo(data);
                 if (!data.has_file) {
@@ -66,7 +122,7 @@ const PrediccionEstudiantes = () => {
 
     const fetchEstadisticas = async () => {
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/estadisticas_archivo`, {
+            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/estadisticas_archivo`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -81,11 +137,11 @@ const PrediccionEstudiantes = () => {
     const fetchEstudiantes = async (page) => {
         setIsTableLoading(true);
         try {
-            const res = await fetch(`${import.meta.env.VITE_AUTH_BASE_URL}/api/predicciones?page=${page}&per_page=10`, {
+            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/predicciones?page=${page}&per_page=10`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
-            
+
             if (res.ok && data.success) {
                 setEstudiantes(data.estudiantes);
                 setPaginacion(data.info_paginacion);
@@ -126,49 +182,34 @@ const PrediccionEstudiantes = () => {
     return (
         <div className={styles.dashboardWrapper}>
             <header className={styles.dashboardHeader}>
-                <h1>Resultados de Predicción Grupal</h1>
-                <p>Archivo analizado: <strong>{statusArchivo.filename}</strong> (Subido: {new Date(statusArchivo.fecha_subida).toLocaleDateString()})</p>
-                <p>Total en riesgo detectado: <strong>{paginacion.total_estudiantes_en_riesgo} alumnos</strong></p>
+                <div>
+                    <h1>Resultados de Predicción Grupal</h1>
+                    <p>Archivo analizado: <strong>{statusArchivo.filename}</strong> (Subido: {new Date(statusArchivo.fecha_subida).toLocaleDateString()})</p>
+                    <p>Total en riesgo detectado: <strong>{paginacion.total_estudiantes_en_riesgo} alumnos</strong></p>
+                </div>
+                <button
+                    className={styles.reporteButton}
+                    onClick={handleDownloadPDF}
+                    disabled={isDownloading}
+                    style={{ opacity: isDownloading ? 0.7 : 1, cursor: isDownloading ? 'not-allowed' : 'pointer' }}
+                >
+                    <i
+                        className={isDownloading ? "fas fa-spinner fa-spin" : "fas fa-file-alt"}
+                        style={{ marginRight: 8 }}
+                    ></i>
+                    {isDownloading ? "Generando..." : "Generar reporte"}
+                </button>
             </header>
 
-            {/* SECCIÓN DE GRÁFICAS */}
-            {charts && (
-                <div className={styles.chartsGrid}>
-                    <div className={styles.chartCard}>
-                        <h3>Distribución de Edades en Riesgo</h3>
-                        {charts.pastel_edades ? (
-                            <Plot 
-                                data={charts.pastel_edades.data || charts.pastel_edades} 
-                                layout={{...charts.pastel_edades.layout, autosize: true}} 
-                                useResizeHandler={true}
-                                style={{ width: "100%", height: "100%" }}
-                            />
-                        ) : <p>Cargando gráfica...</p>}
-                    </div>
-                    
-                    <div className={styles.chartCard}>
-                        <h3>Proporción de Foráneos</h3>
-                        {charts.pastel_foraneos ? (
-                            <Plot 
-                                data={charts.pastel_foraneos.data || charts.pastel_foraneos} 
-                                layout={{...charts.pastel_foraneos.layout, autosize: true}} 
-                                useResizeHandler={true}
-                                style={{ width: "100%", height: "100%" }}
-                            />
-                        ) : <p>Cargando gráfica...</p>}
-                    </div>
-                </div>
-            )}
-
             {/* SECCIÓN DE TABLA */}
-            <div className={styles.tableSection}>
-                <h2>Detalle de Alumnos en Riesgo</h2>
-                
+            <div className={styles.tablaContainer}>
+                <h2 className={styles.titulo}>Detalle de Alumnos en Riesgo</h2>
+
                 {isTableLoading ? (
                     <p>Actualizando tabla...</p>
                 ) : (
                     <div className={styles.tableResponsive}>
-                        <table className={styles.studentsTable}>
+                        <table className={styles.tablaEstudiantes}>
                             <thead>
                                 <tr>
                                     <th>Matrícula</th>
@@ -181,11 +222,11 @@ const PrediccionEstudiantes = () => {
                             <tbody>
                                 {estudiantes.map((est) => (
                                     <tr key={est.matricula}>
-                                        <td>{est.matricula}</td>
-                                        <td>{est.carrera}</td>
-                                        <td>{est.edad}</td>
-                                        <td>{est.es_foraneo ? "Sí" : "No"}</td>
-                                        <td>
+                                        <td data-label="Matrícula">{est.matricula}</td>
+                                        <td data-label="Carrera">{est.carrera}</td>
+                                        <td data-label="Edad">{est.edad}</td>
+                                        <td data-label="Foráneo">{est.es_foraneo ? "Sí" : "No"}</td>
+                                        <td data-label="Probabilidad de Deserción">
                                             <span className={est.probabilidad > 80 ? styles.highRisk : styles.mediumRisk}>
                                                 {est.probabilidad}%
                                             </span>
@@ -198,19 +239,19 @@ const PrediccionEstudiantes = () => {
                 )}
 
                 {/* CONTROLES DE PAGINACIÓN */}
-                <div className={styles.paginationControls}>
-                    <button 
-                        onClick={() => handlePageChange(paginacion.pagina_actual - 1)} 
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '15px' }}>
+                    <button
+                        onClick={() => handlePageChange(paginacion.pagina_actual - 1)}
                         disabled={!paginacion.tiene_anterior || isTableLoading}
                         className={styles.pageButton}
                     >
                         Anterior
                     </button>
-                    
+
                     <span>Página {paginacion.pagina_actual} de {paginacion.paginas_totales}</span>
-                    
-                    <button 
-                        onClick={() => handlePageChange(paginacion.pagina_actual + 1)} 
+
+                    <button
+                        onClick={() => handlePageChange(paginacion.pagina_actual + 1)}
                         disabled={!paginacion.tiene_siguiente || isTableLoading}
                         className={styles.pageButton}
                     >
@@ -218,6 +259,48 @@ const PrediccionEstudiantes = () => {
                     </button>
                 </div>
             </div>
+
+            {/* SECCIÓN DE GRÁFICAS */}
+            {charts && (
+                <div className={styles.chartsGrid}>
+                    <div className={styles.card100}>
+                        <h3>Distribución de Edades en Riesgo</h3>
+                        {charts.pastel_edades ? (
+                            <Plot
+                                data={charts.pastel_edades.data}
+                                layout={{
+                                    ...charts.pastel_edades.layout,
+                                    autosize: true,
+                                    useResizeHandler: true,
+                                    width: undefined, // Para que tome el ancho del contenedor padre
+                                    height: 450
+                                }}
+                                style={{ width: "100%" }}
+                                config={{ responsive: true }}
+                            />
+                        ) : <p>Cargando gráfica...</p>}
+                    </div>
+
+                    <div className={styles.card100}>
+                        <h3>Proporción de Foráneos</h3>
+                        {charts.pastel_foraneos ? (
+                            <Plot
+                                data={charts.pastel_foraneos.data}
+                                layout={{
+                                    ...charts.pastel_foraneos.layout,
+                                    autosize: true,
+                                    useResizeHandler: true,
+                                    width: undefined, // Para que tome el ancho del contenedor padre
+                                    height: 450
+                                }}
+                                style={{ width: "100%" }}
+                                config={{ responsive: true }}
+                            />
+                        ) : <p>Cargando gráfica...</p>}
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 };

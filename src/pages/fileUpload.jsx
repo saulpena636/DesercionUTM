@@ -86,7 +86,7 @@ const FileUpload = () => {
             const formData = new FormData();
             formData.append('file', files[0]);
 
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/upload`, {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/upload`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}` 
