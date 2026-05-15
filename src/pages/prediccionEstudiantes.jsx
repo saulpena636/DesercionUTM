@@ -174,7 +174,7 @@ const PrediccionEstudiantes = () => {
             <div className={styles.emptyStateContainer}>
                 <h2>No hay datos procesados</h2>
                 <p>Para ver las predicciones, primero necesitas subir un dataset de alumnos.</p>
-                <Link to="/upload" className={styles.primaryButton}>Ir a Subir Archivo</Link>
+                <Link to="/upload" className={styles.primaryButton} style={{ color: 'var(--primary-color)', textDecoration: 'underline' }}>Ir a Subir Datos</Link>
             </div>
         );
     }

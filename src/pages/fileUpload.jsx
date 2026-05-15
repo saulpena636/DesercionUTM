@@ -136,7 +136,7 @@ const FileUpload = () => {
                 />
                 
                 <span className={styles.icon}>
-                    <i className="fa-solid fa-file-excel"></i> / <i className="fa-solid fa-file-csv"></i>
+                    <i className="fa-solid fa-file-xls"></i> / <i className="fa-solid fa-file-csv"></i>
                 </span>
                 <p className={styles.text}>Arrastra tu archivo de datos aquí</p>
                 <span className={styles.subtext}>O haz clic para buscar en tu computadora</span>
