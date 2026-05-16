@@ -39,7 +39,6 @@ function TablaGeneral({ tablaEstudiantes = [] }) {
                         <th>Carrera</th>
                         <th>Grupo</th>
                         <th>Promedio</th>
-                        <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,9 +50,6 @@ function TablaGeneral({ tablaEstudiantes = [] }) {
                             <td data-label="Carrera">{row['CARRERA']}</td>
                             <td data-label="Grupo">{row['GRUPO']}</td>
                             <td data-label="Promedio">{row['PROMEDIO GENERAL']}</td>
-                            <td>
-                                <a href="#" className={styles.btnDetalles}>Ver perfil</a>
-                            </td>
                         </tr>
                     ))}
                 </tbody>

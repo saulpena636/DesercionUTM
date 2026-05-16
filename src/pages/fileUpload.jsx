@@ -1,22 +1,38 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importamos useNavigate
 import styles from './css/fileUpload.module.css';
+import excelLight from '../assets/excel-light.png';
+import excelDark from '../assets/excel-dark.png';
+
 
 const FileUpload = () => {
     const [dragActive, setDragActive] = useState(false);
-    const [files, setFiles] = useState([]); 
-    
+    const [files, setFiles] = useState([]);
+
     const [isLoading, setIsLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-    
+
+    const [currentTheme, setCurrentTheme] = useState(document.documentElement.getAttribute('data-theme'));
+
+    // Escuchamos si el atributo cambia (opcional, si el cambio es en tiempo real)
+    useEffect(() => {
+        const observer = new MutationObserver(() => {
+            setCurrentTheme(document.documentElement.getAttribute('data-theme'));
+        });
+        observer.observe(document.documentElement, { attributes: true });
+        return () => observer.disconnect();
+    }, []);
+
+    const isDark = currentTheme === 'dark';
+
     const inputRef = useRef(null);
     const navigate = useNavigate(); // Inicializamos el hook
 
     const allowedTypes = [
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
-        "application/vnd.ms-excel", 
-        "text/csv" 
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/vnd.ms-excel",
+        "text/csv"
     ];
     const allowedExtensions = ['.xlsx', '.xls', '.csv'];
 
@@ -31,10 +47,10 @@ const FileUpload = () => {
     };
 
     const handleFiles = (incomingFiles) => {
-        setSuccessMessage(""); 
+        setSuccessMessage("");
         setErrorMessage("");
-        
-        const file = incomingFiles[0]; 
+
+        const file = incomingFiles[0];
         if (!file) return;
 
         const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
@@ -65,7 +81,7 @@ const FileUpload = () => {
     };
 
     const removeFile = () => {
-        setFiles([]); 
+        setFiles([]);
     };
 
     const handleUpload = async () => {
@@ -89,7 +105,7 @@ const FileUpload = () => {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/upload`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}` 
+                    'Authorization': `Bearer ${token}`
                 },
                 body: formData
             });
@@ -99,8 +115,8 @@ const FileUpload = () => {
             if (response.ok && data.success) {
                 // Mostramos el mensaje de éxito del backend
                 setSuccessMessage(data.message + " Redirigiendo a resultados...");
-                setFiles([]); 
-                
+                setFiles([]);
+
                 // Redirigimos a la tabla después de 1.5 segundos
                 setTimeout(() => {
                     navigate('/perfil');
@@ -109,7 +125,7 @@ const FileUpload = () => {
             } else {
                 throw new Error(data.message || `Error al procesar el archivo ${files[0].name}`);
             }
-            
+
         } catch (error) {
             console.error("Error en la subida:", error);
             setErrorMessage(error.message || "Hubo un problema al conectar con el servidor.");
@@ -119,24 +135,31 @@ const FileUpload = () => {
 
     return (
         <div className={styles.wrapper}>
-            <div 
+            <div
                 className={`${styles.uploadContainer} ${dragActive ? styles.dragActive : ""}`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
-                onClick={() => inputRef.current.click()} 
+                onClick={() => inputRef.current.click()}
             >
-                <input 
+                <input
                     ref={inputRef}
-                    type="file" 
+                    type="file"
                     accept=".xlsx, .xls, .csv"
                     onChange={handleChange}
                     style={{ display: 'none' }}
                 />
-                
+
                 <span className={styles.icon}>
-                    <i className="fa-solid fa-file-xls"></i> / <i className="fa-solid fa-file-csv"></i>
+                    {/* Intercambio dinámico de imagen según el tema */}
+                    <img
+                        src={isDark ? excelLight : excelDark}
+                        alt="Excel Icon"
+                        className={styles.customIcon}
+                    />
+                    <span> / </span>
+                    <i className="fa-solid fa-file-csv"></i>
                 </span>
                 <p className={styles.text}>Arrastra tu archivo de datos aquí</p>
                 <span className={styles.subtext}>O haz clic para buscar en tu computadora</span>
@@ -156,8 +179,8 @@ const FileUpload = () => {
             )}
 
             {files.length > 0 && (
-                <button 
-                    className={styles.filtersButton} 
+                <button
+                    className={styles.filtersButton}
                     style={{ marginTop: '20px', width: '100%', opacity: isLoading ? 0.7 : 1 }}
                     onClick={handleUpload}
                     disabled={isLoading}

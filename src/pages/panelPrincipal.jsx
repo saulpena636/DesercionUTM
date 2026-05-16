@@ -99,7 +99,7 @@ function PanelPrincipal() {
         <>
             <div className={styles.header}>
                 <div>
-                    <h1>Panel Principal</h1>
+                    <h1>Panel Estadístico</h1>
                     <p className={styles.subtitulo}>Datos del semestre 2026-A</p>
                 </div>
                 <button

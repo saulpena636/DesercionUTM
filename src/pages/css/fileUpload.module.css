@@ -10,6 +10,14 @@
     margin-top: 20px;
 }
 
+.customIcon {
+    width: 54px;   /* Ajusta según el tamaño de tu fuente (ej. 1.5rem) */
+    height: auto;
+    margin-bottom: 6px;
+    vertical-align: middle; /* Para que se alinee bien con el texto o el '/' */
+
+}
+
 /* Efecto cuando el archivo está encima */
 .dragActive {
     border-color: var(--primary-color);
