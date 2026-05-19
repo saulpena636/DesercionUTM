@@ -39,10 +39,10 @@ function PanelEstudiantes() {
 
         try {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/reporte/dashboard`, {
-                method: 'POST', // Cambiamos a POST
+                method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json' // Indicamos que enviamos un JSON
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     carreras: selectedCarreras,
@@ -54,18 +54,44 @@ function PanelEstudiantes() {
                 throw new Error("Error al generar el reporte estadístico en el servidor.");
             }
 
-            // Convertimos la respuesta binaria a un Blob tipo PDF
             const rawBlob = await response.blob();
             const pdfBlob = new Blob([rawBlob], { type: 'application/pdf' });
-
-            // Creamos la URL temporal y abrimos en una nueva pestaña
             const url = window.URL.createObjectURL(pdfBlob);
-            window.open(url, '_blank');
 
-            // Limpiamos la memoria después de unos segundos
+            // --- SOLUCIÓN PARA ABRIR EN NUEVA PESTAÑA CON TÍTULO ---
+
+            // 1. Abrimos una pestaña en blanco
+            const pdfWindow = window.open("");
+
+            // 2. Verificamos que el navegador no haya bloqueado la ventana emergente (Pop-up blocker)
+            if (pdfWindow) {
+                // 3. Escribimos un HTML estructurado en la nueva pestaña
+                pdfWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Reporte_Estadistico_UTM.pdf</title>
+                        <style>
+                            body { margin: 0; padding: 0; overflow: hidden; background-color: #525659; }
+                            iframe { width: 100vw; height: 100vh; border: none; }
+                        </style>
+                    </head>
+                    <body>
+                        <iframe src="${url}" title="Reporte PDF"></iframe>
+                    </body>
+                </html>
+            `);
+                // Cierra el flujo de escritura del documento
+                pdfWindow.document.close();
+            } else {
+                // Si entra aquí, es porque el usuario tiene un bloqueador de ventanas emergentes activado
+                alert("El navegador bloqueó la pestaña. Por favor, permite las ventanas emergentes para este sitio.");
+            }
+
+            // Importante: No uses revokeObjectURL inmediatamente o el iframe no cargará
+            // Lo limpiamos después de un tiempo prudente
             setTimeout(() => {
                 window.URL.revokeObjectURL(url);
-            }, 5000);
+            }, 10000); // 10 segundos es suficiente para que el visor lo renderice
 
         } catch (error) {
             console.error("Error generando el PDF:", error);
